@@ -1,6 +1,8 @@
 package players;
 
-public class Hero extends Player{
+import somePackages.Search;
+
+public class Hero extends Player {
 
     public Hero() {
 

@@ -1,3 +1,5 @@
+package somePackages;
+
 import players.Hero;
 import players.Princess;
 
@@ -35,6 +37,10 @@ public class Map {
         System.out.printf("Princess: X = %d, Y = %d \n" +
                 "Hero: X = %d, Y = %d",
                 princess.getX(), princess.getY(), hero.getX(), hero.getY());
+    }
+
+    public char getPoint(int x, int y) {
+        return map[x][y];
     }
 
     public int getSize() {
