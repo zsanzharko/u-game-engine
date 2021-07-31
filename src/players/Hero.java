@@ -1,5 +1,6 @@
 package players;
 
+import somePackages.Map;
 import somePackages.Search;
 
 public class Hero extends Player {
@@ -8,11 +9,15 @@ public class Hero extends Player {
 
     }
 
-    public Hero(int x, int y) {
-        super(x, y);
+    public Hero(Map map) {
+        super(map);
+    }
+
+    public Hero(int x, int y, Map map) {
+        super(x, y, map);
     }
 
     public char getToken() {
-        return 'S';
+        return 'H';
     }
 }

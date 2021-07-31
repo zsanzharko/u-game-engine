@@ -7,64 +7,100 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player implements Person, Search {
+    private Map map;
     private int x;
     private int y;
-    private boolean isStanding;
     private List<ArrayList<String>> data;
 
     public Player() {
 
     }
 
-    public Player(int x, int y) {
+    public Player(Map map) {
+        this.map = map;
+    }
+
+    public Player(int x, int y, Map map) {
         this.x = x;
         this.y = y;
-        isStanding = true;
+        this.map = map;
         data = new ArrayList<>();
     }
 
     @Override
-    public int move(char coordinate, int speed) {
-        isStanding = false;
-        if (coordinate == 'x') {
-            setX(x + speed);
-            isStanding = true;
-            return getX();
-        } else {
-            setY(y + speed);
-            isStanding = true;
-            return getY();
-        }
-
-    }
-
-    @Override
-    public int find(Map map, char token) {
-        long startTime = System.currentTimeMillis();
+    public boolean find(Map map, char token) {
         boolean findIt = false;
+        int num, point;
         while (!findIt) {
-            double num = (Math.random() * getVision());
-            int vectorX, vectorY;
-            vectorX = 1 - (int) (Math.random() + 3);
-            vectorY = 1 - (int) (Math.random() + 3);
-            for (int i = x; !findIt ;) {
-
-                for (int k = y; !findIt;) {
-
-
-                    if (map.getPoint(i, k) == token)
-                        findIt = true;
-                }
-            }
+            point = (int) (getVision() - (Math.random() * (getVision() * 2)));
+            num = (int) (Math.random() * 6);
+            if (num >= 3)
+                findIt = findToX(token, point);
+            else
+                findIt = findToY(token, point);
+//            map.showMap();
+//            try {
+//                Thread.sleep(1000);
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
+//            System.out.println("\n");
         }
-        System.out.println(System.currentTimeMillis() - startTime);
-        return 1;
+        return true;
     }
 
-    @Override
-    public boolean isStanding() {
-        return isStanding;
+    private boolean findToX(char token, int point) {
+        boolean find;
+        point += x;
+        if (point < 0)
+            point += map.getSize() - 1;
+        else if (point >= map.getSize())
+            point %= map.getSize() - 1;
+
+        if (map.getPoint(point, y) == token)
+            return true;
+        else move('x', point);
+        return false;
     }
+
+    private boolean findToY(char token, int point) {
+        point += y;
+        if (point < 0)
+            point += map.getSize() - 1;
+        else if (point >= map.getSize())
+            point %= map.getSize() - 1;
+
+        if (map.getPoint(x, point) == token)
+            return true;
+        else move('y', point);
+        return false;
+    }
+
+    /**
+     * @param coordinate is X, Y coordinate
+     * @param point      is point when it going
+     */
+    @Override
+    public void move(char coordinate, int point) {
+        if (coordinate == 'x') {
+            point += x;
+            if (point >= map.getSize())
+                point %= map.getSize();
+            else if (point < 0)
+                point += map.getSize();
+            map.setPoint(getToken(), x, y, point, y);
+            setX(point);
+        } else {
+            point += y;
+            if (point >= map.getSize())
+                point %= map.getSize();
+            else if (point < 0)
+                point += map.getSize();
+            map.setPoint(getToken(), x, y, x, point);
+            setY(point);
+        }
+    }
+
 
     public int getX() {
         return x;
@@ -91,6 +127,18 @@ public class Player implements Person, Search {
     }
 
     public float getVision() {
-        return 2.5f;
+        return 1.5f;
+    }
+
+    public Map getMap() {
+        return map;
+    }
+
+    public void setMap(Map map) {
+        this.map = map;
+    }
+
+    public char getToken() {
+        return 'A';
     }
 }

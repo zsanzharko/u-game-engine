@@ -4,8 +4,8 @@ import somePackages.Map;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -15,23 +15,33 @@ import java.util.Scanner;
 
 public class Game {
     private static String inputsData = readInputs();
-    static int size;
+    private static int size;
 
     public static void main(String[] args) {
+        long timeStart = System.currentTimeMillis();
+//        List<Character> players = new ArrayList<>();
+//        players.add('H');
+//        players.add('P');
+//        int size = 5;
+//        setInputsData(generateMap(size));
+//        setInputsData(setPlayers(players, getInputsData()));
         Map map = new Map(size, nestingIntoAnArray());
-        Princess princess = new Princess();
-        Hero hero = new Hero();
-        DbHandler dbHandler = null;
+        Princess princess = new Princess(map);
+        Hero hero = new Hero(map);
 
-        try {
-            dbHandler = DbHandler.getInstance();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(hero.find(map, princess.getToken()));
-
-//        map.checkPosition(princess, hero);
+        map.checkPosition(princess, hero);
+        boolean find = hero.find(map, princess.getToken());
+        long timeEnd = System.currentTimeMillis();
+//        System.out.println(find ? "I found u" : "I dont found u");
+        System.out.println((timeEnd - timeStart) + " ms");
+//        DbHandler dbHandler = null;
+//
+//        try {
+//            dbHandler = DbHandler.getInstance();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        boolean find = hero.find(map, princess.getToken());
     }
 
     static String readInputs() {
@@ -44,11 +54,10 @@ public class Game {
             e.printStackTrace();
         }
         if (inputs != null) {
+            size = Integer.parseInt(inputs.next());
             while (inputs.hasNext()) {
                 string.append(inputs.next());
             }
-            size = Integer.parseInt(String.valueOf(string.charAt(0)));
-            string.delete(0, 1);
         }
         return string.toString();
     }
@@ -64,11 +73,36 @@ public class Game {
         return c;
     }
 
+    private static String generateMap(int size) {
+        StringBuilder map = new StringBuilder();
+        setSize(size);
+        map.append("-".repeat(size).repeat(size));
+        return map.toString();
+    }
+
+    private static String setPlayers(List<Character> players, String map) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(map);
+
+        for (Character player : players) {
+            stringBuilder.insert((int) (Math.random() * (Math.pow(size, 2))), player);
+        }
+        return stringBuilder.toString();
+    }
+
     public static String getInputsData() {
         return inputsData;
     }
 
     public static void setInputsData(String inputsData) {
         Game.inputsData = inputsData;
+    }
+
+    public static int getSize() {
+        return size;
+    }
+
+    public static void setSize(int size) {
+        Game.size = size;
     }
 }

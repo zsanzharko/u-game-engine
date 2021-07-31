@@ -1,13 +1,19 @@
 package players;
 
+import somePackages.Map;
+
 public class Princess extends Player {
 
     public Princess () {
 
     }
 
-    public Princess(int x, int y) {
-        super(x, y);
+    public Princess (Map map) {
+        super(map);
+    }
+
+    public Princess(int x, int y, Map map) {
+        super(x, y, map);
     }
 
     public char getToken() {

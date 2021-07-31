@@ -2,12 +2,11 @@ package somePackages;
 
 import players.Hero;
 import players.Princess;
+import java.util.Arrays;
 
 public class Map {
     private int size;
     private char[][] map;
-    private int[] pPosition;
-    private int[] sPosition;
 
     public Map() {
     }
@@ -33,14 +32,22 @@ public class Map {
                 }
             }
         }
-//        System.out.print(princess.getX() + " " + princess.getY());
-        System.out.printf("Princess: X = %d, Y = %d \n" +
-                "Hero: X = %d, Y = %d",
-                princess.getX(), princess.getY(), hero.getX(), hero.getY());
+//        System.out.print("Princess position: x=" + princess.getX() + " | y=" + princess.getY());
+//        System.out.print("\n");
+//        System.out.print("Hero position: x=" + hero.getX() + " | y=" + hero.getY());
+//        System.out.println();
     }
 
     public char getPoint(int x, int y) {
         return map[x][y];
+    }
+    public void setPoint(char token, int currentX, int currentY, int goToX, int goToY) {
+        map[goToX][goToY] = token;
+        map[currentX][currentY] = '-';
+    }
+
+    public boolean pointIsValid(int point) {
+        return point >= 0 && point <= getSize();
     }
 
     public int getSize() {
@@ -55,23 +62,22 @@ public class Map {
         return map;
     }
 
+    public String toString() {
+        return Arrays.deepToString(getMap());
+    }
+
+    public void showMap() {
+        for (char[] chars : map) {
+            System.out.print("[");
+            for (char aChar : chars) {
+                System.out.print(aChar + ", ");
+            }
+            System.out.print("] ");
+            System.out.println();
+        }
+    }
+
     public void setMap(char[][] map) {
         this.map = map;
-    }
-
-    public int[] getpPosition() {
-        return pPosition;
-    }
-
-    public void setpPosition(int[] pPosition) {
-        this.pPosition = pPosition;
-    }
-
-    public int[] getsPosition() {
-        return sPosition;
-    }
-
-    public void setsPosition(int[] sPosition) {
-        this.sPosition = sPosition;
     }
 }
