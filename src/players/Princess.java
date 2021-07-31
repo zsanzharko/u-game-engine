@@ -2,7 +2,7 @@ package players;
 
 import somePackages.Map;
 
-public class Princess extends Player {
+public class Princess extends Person {
 
     public Princess () {
 

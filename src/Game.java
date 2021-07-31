@@ -1,9 +1,9 @@
-import players.Hero;
-import players.Princess;
+import players.*;
 import somePackages.Map;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,32 +16,23 @@ import java.util.Scanner;
 public class Game {
     private static String inputsData = readInputs();
     private static int size;
+    static ArrayList<Person> persons = new ArrayList<>();
 
     public static void main(String[] args) {
-        long timeStart = System.currentTimeMillis();
-//        List<Character> players = new ArrayList<>();
-//        players.add('H');
-//        players.add('P');
-//        int size = 5;
-//        setInputsData(generateMap(size));
-//        setInputsData(setPlayers(players, getInputsData()));
-        Map map = new Map(size, nestingIntoAnArray());
-        Princess princess = new Princess(map);
-        Hero hero = new Hero(map);
+        Map map = new Map(25);
+        map.generateMap();
+        createPerson(1, PersonType.PRINCESS, map);
+        createPerson(2, PersonType.HERO, map);
+        createPerson(10, PersonType.ENEMY, map);
+        map.setPlayersInMap(persons);
 
-        map.checkPosition(princess, hero);
-        boolean find = hero.find(map, princess.getToken());
-        long timeEnd = System.currentTimeMillis();
-//        System.out.println(find ? "I found u" : "I dont found u");
-        System.out.println((timeEnd - timeStart) + " ms");
-//        DbHandler dbHandler = null;
-//
-//        try {
-//            dbHandler = DbHandler.getInstance();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        boolean find = hero.find(map, princess.getToken());
+        map.showMap();
+    }
+
+    private static void createPerson(int count, PersonType type, Map map) {
+        for (int i = 0; i < count; ++i) {
+            persons.add(new PersonFactory().createPlayer(type, map));
+        }
     }
 
     static String readInputs() {
@@ -62,32 +53,13 @@ public class Game {
         return string.toString();
     }
 
-    public static char[][] nestingIntoAnArray() {
-        char[][] c = new char[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int k = 0; k < size; k++) {
-                c[i][k] = getInputsData().charAt(k);
-            }
-            setInputsData(getInputsData().substring(size));
+    private void DBConnection() {
+        DbHandler dbHandler = null;
+        try {
+            dbHandler = DbHandler.getInstance();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return c;
-    }
-
-    private static String generateMap(int size) {
-        StringBuilder map = new StringBuilder();
-        setSize(size);
-        map.append("-".repeat(size).repeat(size));
-        return map.toString();
-    }
-
-    private static String setPlayers(List<Character> players, String map) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(map);
-
-        for (Character player : players) {
-            stringBuilder.insert((int) (Math.random() * (Math.pow(size, 2))), player);
-        }
-        return stringBuilder.toString();
     }
 
     public static String getInputsData() {

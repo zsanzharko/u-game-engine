@@ -2,21 +2,19 @@ package players;
 
 import somePackages.Map;
 
-public class Hero extends Person {
-    private float health = 20f;
-    private float armor = 3.1f;
+public class Enemy extends Person {
+    private float health = 15f;
+    private float armor = 5f;
     private String weapon = "";
 
-    public Hero() {
+    public Enemy(){}
 
-    }
-
-    public Hero(Map map) {
-        super(map);
-    }
-
-    public Hero(int x, int y, Map map) {
+    public Enemy(int x, int y, Map map) {
         super(x, y, map);
+    }
+
+    public Enemy(Map map) {
+        super(map);
     }
 
     public float getHealth() {
@@ -44,6 +42,6 @@ public class Hero extends Person {
     }
 
     public char getToken() {
-        return 'H';
+        return 'E';
     }
 }

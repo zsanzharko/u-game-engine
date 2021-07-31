@@ -1,12 +1,18 @@
 package somePackages;
 
 import players.Hero;
+import players.Person;
 import players.Princess;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Map {
     private int size;
     private char[][] map;
+    List<LinkedList<Integer>> positions = new LinkedList<>();
 
     public Map() {
     }
@@ -16,19 +22,19 @@ public class Map {
         this.map = map;
     }
 
-    public void checkPosition(Princess princess, Hero hero) {
-        char pToken = princess.getToken();
-        char sToken = hero.getToken();
+    public Map(int size) {
+        this.size = size;
+    }
 
+    public void checkPosition() {
         for (int x = 0; x < map.length; x++) {
             for (int y = 0; y < map[x].length; y++) {
-                if (pToken == map[x][y]) {
-                    princess.setX(x);
-                    princess.setY(y);
-                }
-                if (sToken == map[x][y]) {
-                    hero.setX(x);
-                    hero.setY(y);
+                LinkedList<Integer> position = new LinkedList<>();
+                if (map[x][y] != '-') {
+                    position.add(Character.getType(map[x][y]));
+                    position.add(1, x);
+                    position.add(1, y);
+                    positions.add(position);
                 }
             }
         }
@@ -42,8 +48,8 @@ public class Map {
         return map[x][y];
     }
     public void setPoint(char token, int currentX, int currentY, int goToX, int goToY) {
-        map[goToX][goToY] = token;
         map[currentX][currentY] = '-';
+        map[goToX][goToY] = token;
     }
 
     public boolean pointIsValid(int point) {
@@ -62,22 +68,53 @@ public class Map {
         return map;
     }
 
+    public void setMap(char[][] map) {
+        this.map = map;
+    }
+
     public String toString() {
         return Arrays.deepToString(getMap());
     }
 
     public void showMap() {
         for (char[] chars : map) {
-            System.out.print("[");
+            System.out.print("[ ");
             for (char aChar : chars) {
-                System.out.print(aChar + ", ");
+                System.out.print(aChar + " ");
             }
-            System.out.print("] ");
+            System.out.print("]");
             System.out.println();
         }
     }
 
-    public void setMap(char[][] map) {
-        this.map = map;
+    public void generateMap() {
+        String map = "-".repeat(size).repeat(size);
+        this.map = nestingIntoAnArray(map);
+    }
+
+    public void setPlayersInMap(ArrayList<Person> players) {
+        StringBuilder map = new StringBuilder();
+        for (char[] chars : this.map)
+            for (char aChar : chars) map.append(aChar);
+
+        for (Person player : players)
+            map.insert((int) (Math.random() * (Math.pow(size, 2))), player.getToken());
+
+        this.map = nestingIntoAnArray(map.toString());
+    }
+
+    public char[][] nestingIntoAnArray(String map) {
+        char[][] c = new char[size][size];
+        for (int i = 0; i < c.length; ++i) {
+            for (int k = 0; k < c[i].length; ++k) {
+                c[i][k] = map.charAt(k);
+            }
+            map = map.substring(c.length);
+        }
+        return c;
+    }
+
+    public Map build() {
+        return this;
     }
 }
