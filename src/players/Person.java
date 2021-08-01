@@ -1,7 +1,7 @@
 package players;
 
-import somePackages.Map;
-import somePackages.Search;
+import Map.Map;
+import Map.Search;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,52 +34,50 @@ public class Person implements IPerson, Search {
         else health = -1f;
     }
 
+    /**
+     * Method find, finding a token in some point, that defined Math.random
+     * @param token this finding.
+     *              Example: Token 'P' = Princess
+     * */
     @Override
-    public boolean find(Map map, char token) {
+    public boolean find(char token) {
         boolean findIt = false;
-        int num, point;
+        int vector, point;
         while (!findIt) {
             point = (int) (getVision() - (Math.random() * (getVision() * 2)));
-            num = (int) (Math.random() * 6);
-            if (num >= 3)
-                findIt = findToX(token, point);
-            else
-                findIt = findToY(token, point);
-//            map.showMap();
-//            try {
-//                Thread.sleep(1000);
-//            } catch (Exception e) {
-//                System.out.println(e.getMessage());
-//            }
-//            System.out.println("\n");
+            vector = (int) (Math.random() * 6);
+            if (vector >= 3) findIt = findToX(token, point);
+            else findIt = findToY(token, point);
         }
         return true;
     }
 
     private boolean findToX(char token, int point) {
-        boolean find;
-        point += x;
-        if (point < 0)
-            point += map.getSize() - 1;
-        else if (point >= map.getSize())
-            point %= map.getSize() - 1;
+        if (point + x < 0)
+            point += map.getSize() - 1 + x;
+        else if (point + x >= map.getSize())
+            point %= map.getSize() - 1 + x;
+        else point += x;
 
-        if (map.getPoint(point, y) == token)
+        if (map.getPoint(point, y) == token) {
+            move('x', point);
             return true;
-        else move('x', point);
+        }
+        move('x', point);
         return false;
     }
 
     private boolean findToY(char token, int point) {
-        point += y;
-        if (point < 0)
-            point += map.getSize() - 1;
-        else if (point >= map.getSize())
-            point %= map.getSize() - 1;
-
-        if (map.getPoint(x, point) == token)
+        if (point + y < 0)
+            point += map.getSize() - 1 + y;
+        else if (point + y >= map.getSize())
+            point %= map.getSize() - 1 + y;
+        else point += y;
+        if (map.getPoint(x, point) == token) {
+            move('y', point);
             return true;
-        else move('y', point);
+        }
+        move('y', point);
         return false;
     }
 
@@ -90,19 +88,19 @@ public class Person implements IPerson, Search {
     @Override
     public void move(char coordinate, int point) {
         if (coordinate == 'x') {
-            point += x;
-            if (point >= map.getSize())
-                point %= map.getSize();
-            else if (point < 0)
-                point += map.getSize();
+            if (point + x >= map.getSize())
+                point %= map.getSize() + x;
+            else if (point + x < 0)
+                point += map.getSize() + x;
+            else point += x;
             map.setPoint(getToken(), x, y, point, y);
             setX(point);
         } else {
-            point += y;
-            if (point >= map.getSize())
-                point %= map.getSize();
-            else if (point < 0)
-                point += map.getSize();
+            if (point  + y >= map.getSize())
+                point %= map.getSize() + y;
+            else if (point + y< 0)
+                point += map.getSize() + y;
+            else point += y;
             map.setPoint(getToken(), x, y, x, point);
             setY(point);
         }

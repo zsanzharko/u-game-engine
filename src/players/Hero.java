@@ -1,6 +1,6 @@
 package players;
 
-import somePackages.Map;
+import Map.Map;
 
 public class Hero extends Person {
     private float health = 20f;

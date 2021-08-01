@@ -1,11 +1,10 @@
 import players.*;
-import somePackages.Map;
+import Map.Map;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -19,14 +18,21 @@ public class Game {
     static ArrayList<Person> persons = new ArrayList<>();
 
     public static void main(String[] args) {
-        Map map = new Map(25);
+        Map map = new Map(10);
         map.generateMap();
+
         createPerson(1, PersonType.PRINCESS, map);
         createPerson(2, PersonType.HERO, map);
         createPerson(10, PersonType.ENEMY, map);
+
         map.setPlayersInMap(persons);
 
-        map.showMap();
+        int count = 0;
+        for(Person person : persons) {
+            System.out.println(count++);
+            map.showPosition(person);
+            System.out.println(map.checkPosition(person));
+        }
     }
 
     private static void createPerson(int count, PersonType type, Map map) {

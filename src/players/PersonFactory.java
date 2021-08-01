@@ -1,6 +1,6 @@
 package players;
 
-import somePackages.Map;
+import Map.Map;
 
 public class PersonFactory {
     public Person createPlayer(PersonType type, Map map) {
