@@ -1,7 +1,6 @@
 package Map;
 
-import players.Person;
-
+import Players.Person;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -11,6 +10,7 @@ public class Map {
     private int size;
     private char[][] map;
     List<LinkedList<Integer>> positions = new LinkedList<>();
+    private ArrayList<Person> persons = null;
 
     public Map() {
     }
@@ -22,16 +22,6 @@ public class Map {
 
     public Map(int size) {
         this.size = size;
-    }
-
-    public void checkPositions() {
-        for (int x = 0; x < map.length; x++) {
-            for (int y = 0; y < map[x].length; y++) {
-                if (map[x][y] != '-') {
-                    addPosition(x, y);
-                }
-            }
-        }
     }
 
     public void showPosition(Person person) {
@@ -66,6 +56,10 @@ public class Map {
         return false;
     }
 
+    public char point(int x, int y) {
+        return map[x][y];
+    }
+
     private boolean checkCoordinates(int x, int y) {
         for (LinkedList<Integer> position : positions) {
             if (map[x][y] == position.get(0)) {
@@ -76,29 +70,38 @@ public class Map {
         return false;
     }
 
-    public void setPlayersInMap(ArrayList<Person> players) {
+    public void setPlayersInMap(ArrayList<Person> persons) {
         StringBuilder map = new StringBuilder();
         for (char[] chars : this.map)
             for (char aChar : chars) map.append(aChar);
 
-        for (Person player : players) {
+        for (Person person : persons) {
             boolean isValid = true;
             while (isValid) {
                 int point = (int) (Math.random() * (Math.pow(size, 2)));
-                if (!pointIsValid(map.toString(), point, player.getToken())) {
-                    player.setX(point / size);
-                    player.setY(point % size);
+                if (!pointIsValid(map.toString(), point, person.getToken())) {
+                    person.setX(point / size);
+                    person.setY(point % size);
                     map.deleteCharAt(point);
-                    map.insert(point, player.getToken());
+                    map.insert(point, person.getToken());
                     isValid = false;
                 }
             }
         }
         this.map = nestingIntoAnArray(map.toString());
+        setPersons(persons);
     }
 
     private boolean pointIsValid(int point) {
-        return point >= 0 && point <= getSize();
+        return point >= 0 && point < getSize();
+    }
+
+    public int convertMap(int coordinate) {
+        if (!pointIsValid(coordinate))
+            if (coordinate > 0)
+                return coordinate % getSize();
+            else return coordinate + getSize();
+        return coordinate;
     }
 
     private boolean pointIsValid(String map, int point, char token) {
@@ -142,10 +145,10 @@ public class Map {
     * TODO
     *  Edit method toString();
     * */
+
     public String toString() {
         return Arrays.deepToString(getMap());
     }
-
     public void showMap() {
         for (char[] chars : map) {
             System.out.print("[ ");
@@ -171,5 +174,24 @@ public class Map {
             map = map.substring(c.length);
         }
         return c;
+    }
+
+    public ArrayList<Person> getPersons() {
+        return persons;
+    }
+
+    public void setPersons(ArrayList<Person> persons) {
+        this.persons = persons;
+    }
+
+    public Person getPerson(int x, int y) {
+        for (Person person : persons)
+            if (person.getX() == x && person.getY() == y) return person;
+        return null;
+    }
+
+    public void deletePerson(Person person) {
+        map[person.getX()][person.getX()] = '-';
+        persons.remove(person);
     }
 }

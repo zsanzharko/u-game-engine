@@ -1,10 +1,12 @@
-package players;
+package Players;
 
 import Map.Map;
 import Map.Search;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.Math.*;
+import static scince.Algorithms.*;
 
 public class Person implements IPerson, Search {
     private float health;
@@ -12,6 +14,7 @@ public class Person implements IPerson, Search {
     private int x;
     private int y;
     private List<ArrayList<String>> data;
+    private boolean live;
 
     public Person() {
 
@@ -28,24 +31,63 @@ public class Person implements IPerson, Search {
         data = new ArrayList<>();
     }
 
-    public void damage(float damage) {
-        if (health - damage > 0)
-            health -= damage;
-        else health = -1f;
+    public void vision() {
+        int vision = convertFloatToInt(getVision());
+        int centerX = getX() - vision + 1;
+        int centerY = getY() - vision + 1;
+        for (int x = centerX; x < getX() + vision; ++x) {
+            for (int y = centerY; y < getY() + vision; ++y) {
+                int convertX = map.convertMap(x), convertY = map.convertMap(y);
+                System.out.print(map.point(convertX, convertY) + " ");
+                if (!(x == getX() && y == getY()))
+                    checkPerson(convertX, convertY);
+            }
+            System.out.println();
+        }
     }
 
+    private void checkPerson(int x, int y) {
+        switch (map.point(x, y)) {
+            case 'E' -> {
+                if (!damage(2f, map.getPerson(x, y))) {
+                    map.deletePerson(map.getPerson(x, y));
+                }
+            }
+            case 'P' -> {
+                System.out.println("Heroes won!");
+                System.exit(10);
+            }
+        }
+    }
+
+    public boolean damage(float damage, Person person) {
+        if (person.health >= damage) {
+            person.health -= damage;
+            return true;
+        } else {
+            person.live = true;
+            return false;
+        }
+    }
+
+    public boolean damage(float valueDamage) {
+        return false;
+    }
+
+
     /**
-     * Method find, finding a token in some point, that defined Math.random
+     * Method find, finding a token in some point, that defined Algorithms.random
+     *
      * @param token this finding.
      *              Example: Token 'P' = Princess
-     * */
+     */
     @Override
     public boolean find(char token) {
         boolean findIt = false;
         int vector, point;
         while (!findIt) {
-            point = (int) (getVision() - (Math.random() * (getVision() * 2)));
-            vector = (int) (Math.random() * 6);
+            point = (int) (getVision() - (random() * (getVision() * 2)));
+            vector = (int) (random() * 6);
             if (vector >= 3) findIt = findToX(token, point);
             else findIt = findToY(token, point);
         }
@@ -96,9 +138,9 @@ public class Person implements IPerson, Search {
             map.setPoint(getToken(), x, y, point, y);
             setX(point);
         } else {
-            if (point  + y >= map.getSize())
+            if (point + y >= map.getSize())
                 point %= map.getSize() + y;
-            else if (point + y< 0)
+            else if (point + y < 0)
                 point += map.getSize() + y;
             else point += y;
             map.setPoint(getToken(), x, y, x, point);
@@ -132,7 +174,7 @@ public class Person implements IPerson, Search {
     }
 
     public float getVision() {
-        return 1.5f;
+        return 2.6f;
     }
 
     public Map getMap() {
@@ -145,5 +187,13 @@ public class Person implements IPerson, Search {
 
     public char getToken() {
         return 'A';
+    }
+
+    public boolean isLive() {
+        return live;
+    }
+
+    public void setLive(boolean live) {
+        this.live = live;
     }
 }

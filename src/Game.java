@@ -1,4 +1,4 @@
-import players.*;
+import Players.*;
 import Map.Map;
 
 import java.io.File;
@@ -18,21 +18,7 @@ public class Game {
     static ArrayList<Person> persons = new ArrayList<>();
 
     public static void main(String[] args) {
-        Map map = new Map(10);
-        map.generateMap();
 
-        createPerson(1, PersonType.PRINCESS, map);
-        createPerson(2, PersonType.HERO, map);
-        createPerson(10, PersonType.ENEMY, map);
-
-        map.setPlayersInMap(persons);
-
-        int count = 0;
-        for(Person person : persons) {
-            System.out.println(count++);
-            map.showPosition(person);
-            System.out.println(map.checkPosition(person));
-        }
     }
 
     private static void createPerson(int count, PersonType type, Map map) {

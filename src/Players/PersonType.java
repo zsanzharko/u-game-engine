@@ -1,4 +1,4 @@
-package players;
+package Players;
 
 public enum PersonType {
     HERO,
