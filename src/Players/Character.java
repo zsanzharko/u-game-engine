@@ -1,6 +1,6 @@
 package Players;
 
-import Map.Map;
+import Map.Map2D;
 import Map.Search;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,26 +8,26 @@ import java.util.List;
 import static java.lang.Math.*;
 import static scince.Algorithms.*;
 
-public class Person implements IPerson, Search {
+public class Character implements ICharacter, Search {
     private float health;
-    private Map map;
+    private Map2D map2D;
     private int x;
     private int y;
     private List<ArrayList<String>> data;
     private boolean live;
 
-    public Person() {
+    public Character() {
 
     }
 
-    public Person(Map map) {
-        this.map = map;
+    public Character(Map2D map2D) {
+        this.map2D = map2D;
     }
 
-    public Person(int x, int y, Map map) {
+    public Character(int x, int y, Map2D map2D) {
         this.x = x;
         this.y = y;
-        this.map = map;
+        this.map2D = map2D;
         data = new ArrayList<>();
     }
 
@@ -37,8 +37,8 @@ public class Person implements IPerson, Search {
         int centerY = getY() - vision + 1;
         for (int x = centerX; x < getX() + vision; ++x) {
             for (int y = centerY; y < getY() + vision; ++y) {
-                int convertX = map.convertMap(x), convertY = map.convertMap(y);
-                System.out.print(map.point(convertX, convertY) + " ");
+                int convertX = map2D.convertMap(x), convertY = map2D.convertMap(y);
+                System.out.print(map2D.point(convertX, convertY) + " ");
                 if (!(x == getX() && y == getY()))
                     checkPerson(convertX, convertY);
             }
@@ -47,10 +47,10 @@ public class Person implements IPerson, Search {
     }
 
     private void checkPerson(int x, int y) {
-        switch (map.point(x, y)) {
+        switch (map2D.point(x, y)) {
             case 'E' -> {
-                if (!damage(2f, map.getPerson(x, y))) {
-                    map.deletePerson(map.getPerson(x, y));
+                if (!damage(2f, map2D.getPerson(x, y))) {
+                    map2D.deletePerson(map2D.getPerson(x, y));
                 }
             }
             case 'P' -> {
@@ -60,12 +60,12 @@ public class Person implements IPerson, Search {
         }
     }
 
-    public boolean damage(float damage, Person person) {
-        if (person.health >= damage) {
-            person.health -= damage;
+    public boolean damage(float damage, Character character) {
+        if (character.health >= damage) {
+            character.health -= damage;
             return true;
         } else {
-            person.live = true;
+            character.live = true;
             return false;
         }
     }
@@ -88,38 +88,28 @@ public class Person implements IPerson, Search {
         while (!findIt) {
             point = (int) (getVision() - (random() * (getVision() * 2)));
             vector = (int) (random() * 6);
-            if (vector >= 3) findIt = findToX(token, point);
-            else findIt = findToY(token, point);
+            if (vector >= 3) findIt = findToCor(token, point, 'x');
+            else findIt = findToCor(token, point, 'y');
         }
         return true;
     }
 
-    private boolean findToX(char token, int point) {
-        if (point + x < 0)
-            point += map.getSize() - 1 + x;
-        else if (point + x >= map.getSize())
-            point %= map.getSize() - 1 + x;
-        else point += x;
+    private boolean findToCor(char token, int point, char coordinate) {
+        int pointCoordinate;
+        if (coordinate == 'x') {
+            pointCoordinate = x;
+        } else pointCoordinate = y;
 
-        if (map.getPoint(point, y) == token) {
-            move('x', point);
+        if (point + pointCoordinate < 0)
+            point += map2D.getSize() - 1 + pointCoordinate;
+        else if (point + pointCoordinate >= map2D.getSize())
+            point %= map2D.getSize() - 1 + pointCoordinate;
+        else point += pointCoordinate;
+        if (map2D.getPoint(x, point) == token) {
+            move(coordinate, point);
             return true;
         }
-        move('x', point);
-        return false;
-    }
-
-    private boolean findToY(char token, int point) {
-        if (point + y < 0)
-            point += map.getSize() - 1 + y;
-        else if (point + y >= map.getSize())
-            point %= map.getSize() - 1 + y;
-        else point += y;
-        if (map.getPoint(x, point) == token) {
-            move('y', point);
-            return true;
-        }
-        move('y', point);
+        move(coordinate, point);
         return false;
     }
 
@@ -130,20 +120,20 @@ public class Person implements IPerson, Search {
     @Override
     public void move(char coordinate, int point) {
         if (coordinate == 'x') {
-            if (point + x >= map.getSize())
-                point %= map.getSize() + x;
+            if (point + x >= map2D.getSize())
+                point %= map2D.getSize() + x;
             else if (point + x < 0)
-                point += map.getSize() + x;
+                point += map2D.getSize() + x;
             else point += x;
-            map.setPoint(getToken(), x, y, point, y);
+            map2D.setPoint(getToken(), x, y, point, y);
             setX(point);
         } else {
-            if (point + y >= map.getSize())
-                point %= map.getSize() + y;
+            if (point + y >= map2D.getSize())
+                point %= map2D.getSize() + y;
             else if (point + y < 0)
-                point += map.getSize() + y;
+                point += map2D.getSize() + y;
             else point += y;
-            map.setPoint(getToken(), x, y, x, point);
+            map2D.setPoint(getToken(), x, y, x, point);
             setY(point);
         }
     }
@@ -177,12 +167,12 @@ public class Person implements IPerson, Search {
         return 2.6f;
     }
 
-    public Map getMap() {
-        return map;
+    public Map2D getMap() {
+        return map2D;
     }
 
-    public void setMap(Map map) {
-        this.map = map;
+    public void setMap(Map2D map2D) {
+        this.map2D = map2D;
     }
 
     public char getToken() {

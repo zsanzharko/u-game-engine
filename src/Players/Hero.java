@@ -1,8 +1,8 @@
 package Players;
 
-import Map.Map;
+import Map.Map2D;
 
-public class Hero extends Person {
+public class Hero extends Character {
     private float health = 20f;
     private float armor = 3.1f;
     private String weapon = "";
@@ -11,12 +11,12 @@ public class Hero extends Person {
 
     }
 
-    public Hero(Map map) {
-        super(map);
+    public Hero(Map2D map2D) {
+        super(map2D);
     }
 
-    public Hero(int x, int y, Map map) {
-        super(x, y, map);
+    public Hero(int x, int y, Map2D map2D) {
+        super(x, y, map2D);
     }
 
     public float getHealth() {

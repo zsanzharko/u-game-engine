@@ -1,15 +1,15 @@
 package Players;
 
-import Map.Map;
+import Map.Map2D;
 
 public class PersonFactory {
-    public Person createPlayer(PersonType type, Map map) {
-        Person person = null;
+    public Character createPlayer(PersonType type, Map2D map2D) {
+        Character character = null;
         switch (type) {
-            case HERO -> person = new Hero(map);
-            case ENEMY -> person = new Enemy(map);
-            case PRINCESS -> person = new Princess(map);
+            case HERO -> character = new Hero(map2D);
+            case ENEMY -> character = new Enemy(map2D);
+            case PRINCESS -> character = new Princess(map2D);
         }
-        return person;
+        return character;
     }
 }

@@ -1,5 +1,6 @@
 import Players.*;
-import Map.Map;
+import Map.Map2D;
+import Players.Character;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,15 +16,26 @@ import java.util.Scanner;
 public class Game {
     private static String inputsData = readInputs();
     private static int size;
-    static ArrayList<Person> persons = new ArrayList<>();
+    static ArrayList<Character> characters = new ArrayList<>();
 
     public static void main(String[] args) {
+        Map2D map = new Map2D(20);
+        map.generateMap();
 
+        createPerson(1, PersonType.PRINCESS, map);
+        createPerson(1, PersonType.HERO, map);
+        createPerson(30, PersonType.ENEMY, map);
+
+        map.setPlayersInMap(characters);
+        for (Character character : characters) {
+            map.checkPosition(character);
+            map.showPosition(character);
+        }
     }
 
-    private static void createPerson(int count, PersonType type, Map map) {
+    private static void createPerson(int count, PersonType type, Map2D map2D) {
         for (int i = 0; i < count; ++i) {
-            persons.add(new PersonFactory().createPlayer(type, map));
+            characters.add(new PersonFactory().createPlayer(type, map2D));
         }
     }
 
@@ -32,7 +44,7 @@ public class Game {
         StringBuilder string = new StringBuilder();
         try {
             inputs = new Scanner(
-                    new File("C:\\Users\\Legion\\IdeaProjects\\Map Game\\src\\INPUTS.txt"));
+                    new File("C:\\Users\\Legion\\IdeaProjects\\u-game-engine\\src\\INPUTS.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

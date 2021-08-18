@@ -1,6 +1,6 @@
 package Players;
 
-public interface IPerson {
+public interface ICharacter {
     void move(char coordinate, int speed);
     void vision();
 }

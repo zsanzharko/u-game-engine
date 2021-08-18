@@ -1,19 +1,19 @@
 package Players;
 
-import Map.Map;
+import Map.Map2D;
 
-public class Princess extends Person {
+public class Princess extends Character {
 
     public Princess () {
 
     }
 
-    public Princess (Map map) {
-        super(map);
+    public Princess (Map2D map2D) {
+        super(map2D);
     }
 
-    public Princess(int x, int y, Map map) {
-        super(x, y, map);
+    public Princess(int x, int y, Map2D map2D) {
+        super(x, y, map2D);
     }
 
     public char getToken() {
